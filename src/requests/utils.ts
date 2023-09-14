@@ -18,10 +18,16 @@ export const getNormalizedEncodedURI = (uri: string) => {
 
 export const sortHeaderKeys = (keyA: string, keyB: string) => (keyA > keyB ? 1 : -1)
 
-const normalizeHeaderKey = (key: string) => key.toLowerCase().trim()
-const normalizeHeaderValue = (value: string) => value.trim()
+const normalizeHeaderKey = (key: string) =>
+  key !== 'X-Contentful-User-Id' && key !== 'X-Contentful-Crn'
+    ? key.toLowerCase().trim()
+    : key.trim()
+const normalizeHeaderValue = (key: string, value: string) =>
+  key !== 'X-Contentful-User-Id' && key !== 'x-Contentful-Crn'
+    ? value.trim()
+    : value.toLowerCase().trim()
 export const normalizeHeaders = (headers: Record<string, string>) =>
-  map(headers, ([key, value]) => [normalizeHeaderKey(key), normalizeHeaderValue(value)])
+  map(headers, ([key, value]) => [normalizeHeaderKey(key), normalizeHeaderValue(key, value)])
 
 export const pickHeaders = (headers?: Record<string, string>, keys?: string[]) => {
   if (!headers) {
